@@ -11,6 +11,7 @@ import Profile from './components/Profile.vue';
 import CreateTask from './pages/CreateTask.vue';
 import TasksGrid from './components/TasksGrid.vue';
 import Task from './components/Task.vue';
+import EditTask from './pages/EditTask.vue';
 
 
 const routes = [
@@ -74,6 +75,14 @@ const routes = [
             requiresAuth: true
         }
     },
+    {
+        path: '/tasks/:id/update',
+        name: 'EditTask',
+        component: EditTask,
+        meta: {
+            requiresAuth: true
+        }
+    }
 ];
 
 const router = createRouter({history: createWebHistory(), routes});

@@ -7,6 +7,9 @@
             <p>Due Date: {{ task.dueDate }}</p>
             <p>Priority Level: {{ task.priorityLevel }}</p>
             <p>Status: {{ task.status }}</p>
+            <button class="btn btn-primary" @click="goBack">Go Back</button>
+            <button class="btn btn-success" @click="editTask">Edit</button>
+            <button class="btn btn-danger" @click="confirmDelete">Delete</button>
         </div>
         <div v-else-if="user && !task">
             <p>Task not found or you do not have permission to view this task.</p>
@@ -14,14 +17,13 @@
         <div v-else>
             <p>You must be logged in to view this task.</p>
         </div>
-        <button class="btn btn-primary" @click="goBack">Go Back</button>
     </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import { db } from '../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
 
@@ -30,7 +32,7 @@ export default {
         const router = useRouter();
         const auth = getAuth();
         const task = ref(null);
-        const taskId = ref(router.currentRoute.value.params.id); 
+        const taskId = ref(router.currentRoute.value.params.id);
         const user = ref(auth.currentUser);
 
         onMounted(async () => {
@@ -52,11 +54,37 @@ export default {
             router.push('/tasks-view');
         };
 
+        const editTask = () => {
+            // Navigate to the edit page for the task
+            router.push(`/tasks/${taskId.value}/update`);
+        };
+
+        const confirmDelete = () => {
+            if (window.confirm("Are you sure you want to delete this task?")) {
+                // Delete the task and navigate back
+                deleteTask();
+            }
+        };
+
+        const deleteTask = async () => {
+            if (auth.currentUser && taskId.value) {
+                try {
+                    await deleteDoc(doc(db, 'tasks', taskId.value));
+                    alert("Task deleted successfully.");
+                    router.push('/tasks-view');
+                } catch (error) {
+                    console.error("Error deleting task: ", error);
+                }
+            }
+        };
+
         return {
             user,
             task,
             taskId,
             goBack,
+            editTask,
+            confirmDelete,
         };
     },
 };

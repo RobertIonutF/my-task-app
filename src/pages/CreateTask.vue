@@ -84,6 +84,3 @@ export default {
 };
 </script>
   
-<style>
-/* Add styles here if needed */
-</style>
