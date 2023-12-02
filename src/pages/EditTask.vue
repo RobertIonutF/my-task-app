@@ -50,6 +50,7 @@ import { db } from '../firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
+import { serverTimestamp } from 'firebase/firestore';
 
 export default {
     setup() {
@@ -101,7 +102,7 @@ export default {
                     dueDate: task.value.dueDate,
                     priorityLevel: task.value.priorityLevel,
                     status: task.value.status,
-                    lastUpdated: serverTimestamp() // Use Firebase server timestamp
+                    lastUpdated: serverTimestamp()
                 });
                 alert("Task updated successfully");
                 router.push('/tasks-view'); // Redirect to tasks page or wherever appropriate
